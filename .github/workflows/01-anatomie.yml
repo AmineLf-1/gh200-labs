@@ -41,6 +41,7 @@ jobs:
         run: print("Bonjour depuis Python")
 
   second-job:
+    needs: portee-env
     runs-on: ubuntu-latest
     defaults:
         run:
