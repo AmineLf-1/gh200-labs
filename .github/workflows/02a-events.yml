@@ -1,0 +1,35 @@
+name: 02a - Events de base
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      environnement:
+        description: "Cible"
+        type: choice
+        options: [dev, staging, prod]
+        default: dev
+        required: true
+      verbose:
+        type: boolean
+        default: false
+      version:
+        type: string
+        default: "1.0.0"
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "event_name  = ${{ github.event_name }}"
+          echo "action      = ${{ github.event.action }}"
+          echo "ref         = ${{ github.ref }}"
+          echo "sha         = ${{ github.sha }}"
+      - name: Inputs (dispatch uniquement)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "env=${{ inputs.environnement }}"
+          echo "verbose=${{ inputs.verbose }}"
+          echo "via event.inputs=${{ github.event.inputs.verbose }}"
