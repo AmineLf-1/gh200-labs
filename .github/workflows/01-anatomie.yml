@@ -1,0 +1,51 @@
+name: 01 - Anatomie
+run-name: "Anatomie lancée par ${{ github.actor }} sur ${{ github.ref_name }}"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  NIVEAU: workflow
+  APP_NAME: gh200
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./api
+
+jobs:
+  portee-env:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      NIVEAU: job
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Niveau au niveau job
+        run: echo "NIVEAU=$NIVEAU"          # -> job (le job écrase le workflow)
+
+      - name: Niveau au niveau step
+        env:
+          NIVEAU: step
+        run: echo "NIVEAU=$NIVEAU"          # -> step (le step écrase le job)
+
+      - name: Override du working-directory
+        working-directory: ./web
+        run: pwd                            # -> .../web
+
+      - name: Override du shell
+        shell: python
+        run: print("Bonjour depuis Python")
+
+  second-job:
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+            working-directory: ./web            # defaults de job > defaults de workflow
+    steps:
+        - uses: actions/checkout@v4
+        - run: pwd
+        - run: echo "NIVEAU=$NIVEAU, APP=$APP_NAME"    
