@@ -1,0 +1,13 @@
+name: Repo Dispatch Workflow 02e
+
+on:
+  repository_dispatch:
+    types: [deploy, rollback]
+jobs:
+  handle-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Handle repository dispatch
+        run: |
+          echo "Repository dispatch event received: ${{ github.event.action }}"
+          echo "cible = ${{ github.event.client_payload.cible }}"
