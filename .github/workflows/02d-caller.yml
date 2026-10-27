@@ -1,0 +1,25 @@
+name: Caller Workflow 02d
+
+on:
+  workflow_dispatch:
+    inputs:
+      dotnet-version:
+        description: 'The .NET version to use'
+        required: true
+        type: string
+        default: '9.0.x'
+
+jobs:
+  call-reusable-workflow:
+    uses: ./.github/workflows/02c-reusable.yml
+    with:
+      dotnet-version: "9.0.x"
+    secrets:
+      MY_SECRET: ${{ secrets.MY_SECRET }}
+  lecture:  
+    runs-on: ubuntu-latest
+    needs: call-reusable-workflow
+    steps:
+      - name: Read output from reusable workflow
+        run: |
+          echo "Resultat: ${{ needs.call-reusable-workflow.outputs.resultat }}"

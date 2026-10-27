@@ -1,0 +1,31 @@
+name: Reusable Workflow 02c
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        description: 'The .NET version to use'
+        required: true
+        type: string
+        default: '8.0.x'
+    secrets:
+      MY_SECRET:
+        description: 'An example secret for the reusable workflow'
+        required: true
+    outputs:
+      resultat:
+        description: 'An example output for the reusable workflow'
+        value: ${{ jobs.calc.outputs.resultat }}
+jobs:
+  calc:
+    runs-on: ubuntu-latest
+    outputs:
+      resultat: ${{ steps.s1.outputs.valeur }}
+    steps:
+      - name: step 1
+        id: s1
+        run: echo "valeur=42- ${{ inputs.dotnet-version }}" >> $GITHUB_OUTPUT
+      - run: echo "secret reçu de longueur *{#SECRET1}"
+        env:
+            SECRET1: ${{ secrets.MY_SECRET }}
+        
